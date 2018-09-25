@@ -1,9 +1,15 @@
 package com.example.RestApi;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.example.RestApi.Time_Conversion;
+import com.example.RestApi.TransactionClass;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.text.ParseException;
 import java.util.List;
 import org.springframework.http.*;
 
@@ -16,6 +22,18 @@ public class ControllerClass{
 	
 	Statistics st=new Statistics();
 	
+		Time_Conversion t=new Time_Conversion();
+		@RequestMapping(value = "/transactions", method = RequestMethod.POST)
+		public ResponseEntity<TransactionClass> update(@RequestBody TransactionClass tc) throws ParseException {
+		
+			Time_Conversion t=new Time_Conversion();
+			boolean result=t.timeConversion(tc.getTimestamp());
+			if (result==false)
+				return new ResponseEntity<TransactionClass>(tc, HttpStatus.NO_CONTENT);
+			else 
+				return new ResponseEntity<TransactionClass>(tc, HttpStatus.CREATED);
+		}
+			
 	@RequestMapping(value = "/statisticsPost", method= RequestMethod.POST)
 	public ResponseEntity<List<TransactionClass>> TransactionMethod(@RequestBody List<TransactionClass> tc) 
 	{
@@ -39,8 +57,7 @@ public class ControllerClass{
 			
 			});
 		if(count>0)
-		{	
-			
+		{		
 			avg=(int)sum/count;
 		}	
 		return new ResponseEntity<List<TransactionClass>>( HttpStatus.CREATED);
